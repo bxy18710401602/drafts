@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+    <script src="react.js"></script>
+    <script src="jquery.js"></script>
+    <script src="react-dom.js"></script>
+    <script src="babel.min.js"></script>
+  </head>
+<body>
+  <div id="example">
+      <script type="text/babel">
+          //用class关键字定义一个基本的类
+          class Polygon {
+              //对于基类，默认的构造函数是construct(){},如果没有写构造函数，就会使用默认构造函数
+              constructor(height, width){
+                 this.name = '多边形';
+                 this.height = height;
+                 this.width = width;
+              }
+              //简单的类实例方法通过方便的方式声明
+              sayName() {
+                  console.log('你好，我是一个', this.name + '.')
+              }
+              sayHistory() {
+                  console.log('多边形的历史。')
+              }
+          }
+
+          let p = new Polygon(300, 400);
+          p.sayName();
+          console.log('宽是:' + p.width);
+
+          //ES6还提供另一种定义类的方式--类表达式
+          const MyPoly = class Poly {
+              constructor() {
+                  this.name = '王小明';
+              }
+              getPolyName() {
+                  console.log('我的名字是:'+ this.name + ' ; 类名是：' + Poly.name);
+              }
+          };
+
+          let inst = new MyPoly();
+          inst.getPolyName();
+
+          //扩展一个存在的类，扩展的内容必须是一个构造函数，延伸Polygon类并且创建一个新的名为Square的类
+          class Square extends Polygon {
+              constructor ( length ){
+                  //super 关键字用于创建能够访问父类方法的超级构造函数，以下的两个length就是提供给Polygon的length和width的。
+                  super(length, length);
+                  //注意： 在衍生类中super()必须放在this前面，否则会造成一个引用错误
+                  this.name = '正方形'
+              }
+              //get和set的使用方法和ES5中的差不多
+              get area() {
+                  return this.height * this.width;
+              }
+
+              set area(value) {
+                  this.area = value;
+              }
+          }
+
+          let s = new Square(5);
+          s.sayName();
+          console.log('这个正方形的面积是：' + s.area);
+
+          //子类继承父类的方法
+          class Rectangle extends Polygon {
+              constructor( height, width ) {
+                  super(height, width);
+                  this.name = '长方形'
+              }
+              //在子类中重写sayName()方法
+              sayName() {
+                  console.log('我的名字是：'+ this.name + '。')
+                  super.sayHistory();
+              }
+          }
+
+          let r = new Rectangle( 50, 60 );
+          r.sayName();
+
+          //定义静态方法
+          class Triple {
+              //使用关键字static创建的方法和类本身有联系，和类的实例无关
+              static triple(n){
+                  n = n || 1;
+                  return n * 3;
+              }
+          }
+          //使用super.prop访问父类方法对于静态方法同样适用
+          class BiggerTriple extends Triple {
+              static triple(n) {
+                  return super.triple(n) * super.triple(n);
+              }
+          }
+
+          console.log(Triple.triple());
+          console.log(Triple.triple(2));
+          console.log(BiggerTriple.triple(2));
+
+          //继承内置的类
+          class MyDate extends Date {
+              constructor() {
+                  super();
+              }
+          }
+
+          var aDate = new MyDate();
+          //es6可以实现继承，但是使用babel打包后就不能继承Date的方法了
+          // console.log(aDate.getTime());
+
+
+          //通过定义一个React.Component的衍生类创建一个组件，react规定，自定义组件的第一个字母必须大写
+          class MyTitle extends React.Component {
+              //派生类默认的构造函数是constructor(...args) {
+              // super(...args);
+              // }
+              constructor(...args) {
+                  super(...args);
+                  this.state = {
+                      name: '访问者',
+                      text: 'Hello World!',
+                      isClicked: false
+                  };
+              }
+
+              handleChange(e) {
+                  let name = e.target.value;
+                  //this.setState()方法用来重置this.state,每次调用这个方法，就会引发组件的重新渲染
+                  this.setState({
+                      name: name
+                  });
+              }
+
+              handleClick() {
+                  let d = new Date();
+                  let textContent = d.getFullYear() + '年' + d.getMonth() + 1 + '月' + d.getDate() + '日';
+                  let isClicked = !this.state.isClicked;
+                  this.setState({
+                      text: isClicked ? textContent: 'Hello World!',
+                      isClicked: isClicked
+                  });
+              }
+
+              //jsx语法的最外层，只能有一个节点。jsx语法中用大括号{}插入Javascript代码
+              // 组件内通过this.props获取参数
+              render() {
+                  return  <div>
+                      <input type="text" onChange={this.handleChange.bind(this)} />
+                      <p>你好，{this.state.name}</p>
+                      <h1 onClick = {this.handleClick.bind(this)}
+                          style={{color: this.props.color}}>{this.state.text}</h1>
+                  </div>
+              }
+          };
+
+          class MyList extends React.Component {
+              constructor(...args) {
+                  super(...args);
+                  this.state = {
+                      loading: true,
+                      error: null,
+                      data: null
+                  };
+              }
+
+              componentDidMount() {
+                  const url = 'https://api.github.com/search/repositories?q=javascript&sort=stars';
+                  $.getJSON(url)
+                      .done(
+                          (value) => this.setState({
+                              loading: false,
+                              data: value
+                          })
+                      ).fail(
+                      (jqXHR, textStatus) => this.setState({
+                          loading: false,
+                          error: jqXHR.status
+                      })
+                  );
+              }
+
+              render() {
+                  console.log(this.state.data, '请求得到的数据');
+                  if( this.state.loading) {
+                      return <span>加载中</span>;
+                  } else if ( this.state.error !== null) {
+                      return <span>Error: {this.state.error}</span>;
+                  } else {
+                      let items = this.state.data.items;
+                      let results = [];
+                      items.forEach( item => {
+                          var li = <li key={item.id}>{item.name}</li>;
+                          results.push(li);
+                      });
+                      return (
+                          <ul>
+                              {results}
+                          </ul>
+                      );
+                  }
+              }
+          }
+
+          //将组件渲染到页面中, ReactDOM.render()只能解析一个标签，所以有多个组件的时候，将其放在一个div中。
+          ReactDOM.render(
+              <div><MyTitle color="green"/><MyList /></div>,
+              document.getElementById('example')
+          );
+
+      </script>
+  </div>
+</body>
+</html>
