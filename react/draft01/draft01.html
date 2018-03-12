@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" >
-    <script src="react.js"></script>
-    <script src="jquery.js"></script>
-    <script src="react-dom.js"></script>
-    <script src="babel.min.js"></script>
+    <script src="../library/react.js"></script>
+    <script src="../library/jquery.js"></script>
+    <script src="../library/react-dom.js"></script>
+    <script src="../library/babel.min.js"></script>
   </head>
 <body>
   <div id="example">
@@ -184,7 +184,6 @@
               }
 
               render() {
-                  console.log(this.state.data, '请求得到的数据');
                   if( this.state.loading) {
                       return <span>加载中</span>;
                   } else if ( this.state.error !== null) {
