@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="text" id="userName" >
+<br>
+<span id="uName"></span>
+<script>
+    var obj = {
+        pwd: "666"
+    };
+    //Object.defineProperty(obj, prop, descripter)方法直接在一个对象上定义一个新属性，或者修改一个对象现有的属性，并返回这个对象。
+    Object.defineProperty(obj, "userName", {
+        get: function() {
+            console.log("get init");
+        },
+        set: function( val ) {
+            console.log("set init");
+            document.getElementById("uName").innerText = val;
+            document.getElementById("userName").value = val;
+        }
+    });
+    document.getElementById("userName").addEventListener("keyup", function(){
+        obj.userName = event.target.value;
+        // document.getElementById("uName").innerText = event.target.value;
+    });
+
+</script>
+</body>
+</html>
