@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!--照着 https://www.cnblogs.com/libin-1/p/6893712.html 进行的练习 -->
+    <!--博客中的代码不完整，完整代码在原作者（canfoo）github：https://github.com/canfoo/self-vue/tree/master/v3 -->
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        h2 {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>{{title}}</h2>
+        <h2>{{name}}</h1>
+        <p>
+        <input v-model="name">
+        <button v-on:click = "clickMe">click me!</button>
+        </p>
+    </div>
+<script>
+// 1.数据监听器Observer,用来劫持并监听所有属性，如果有变动，就通知订阅者
+function Observer (data) {
+    this.data = data;
+    this.walk(data);
+}
+
+Observer.prototype = {
+    walk: function (data) {
+        var self = this;
+        Object.keys(data).forEach(function (key) {
+            self.defineReactive(data, key, data[key]);
+        });
+    },
+    defineReactive: function (data, key, val) {
+        observe(val); // 递归遍历子属性，将参数中的所有属性定义成defineReactive中的样子
+        var dep = new Dep();
+        // var childObj = observe(val);
+        // Vue通过Object.defineProperty()来实现数据劫持
+            Object.defineProperty(data, key, {
+            enumerable: true, // 表示该属性是否可枚举，即是否通过for-in循环或Object.keys()返回属性
+            configurable: true, // 表示能否通过delete删除此属性，能否修改属性的特性
+            get: function getter () { // 给属性提供getter的方法（访问对象属性时调用的函数，返回值就是当前属性的值）
+                if (Dep.target) {  // 是否需要添加订阅者
+                    dep.addSub(Dep.target); // 添加一个订阅者
+                }
+                return val;
+            },
+            set: function setter (newVal) { // 给属性提供setter的方法（给对象属性设置值时调用的函数）
+                if (val === newVal) {
+                    return;
+                }
+                val = newVal;
+                console.log('属性' + key + '已经被监听了，现在值为：' + newVal.toString());
+                dep.notify(); //如果数据变化，通知所有订阅者
+            }
+        });
+   }
+}
+function observe (value) {
+    if (!value || typeof value !== 'object') {
+        return;
+    }
+    return new Observer(value);
+}
+
+// 订阅器Dep主要负责收集订阅者，然后在属性变化的时候执行对应订阅者的更新函数
+function Dep () {
+    this.subs = [];
+}
+// Dep对象可继承的属性
+Dep.prototype = {
+    addSub: function (sub) {
+      this.subs.push(sub);
+    },
+    notify: function () { // 通知
+      this.subs.forEach(function (sub) {
+        sub.update();
+      })
+    }
+};
+Dep.target = null // 将Dep对象本身的属性target设置为空，此属性用于缓存订阅对象
+
+// 2. 订阅者Watcher，收到属性的变化通知并执行相应的函数，从而更新视图
+function Watcher (vm, exp, cb) {
+    this.cb = cb; // 需要执行的函数
+    this.vm = vm; // 模拟的vue model
+    this.exp = exp; // 变量的表达式
+    this.value = this.get(); // 将自己添加到订阅器
+}
+
+Watcher.prototype = {
+    update: function () {
+       this.run();
+    },
+    run: function () {
+        var value = this.vm.data[this.exp];
+        var oldVal = this.value;
+        if (value !== oldVal) {
+            this.value = value;
+            this.cb.call(this.vm, value, oldVal);
+        }
+    },
+    get: function () {
+        Dep.target = this; // 缓存订阅者（自身）
+        var value = this.vm.data[this.exp]; // 强制执行监听器里的get函数
+        Dep.target = null; // 释放订阅者（自身）
+        return value;
+    }
+}
+
+// 3. 解析器Complile。扫描和解析每个节点的相关指令，根据初始化模版数据初始化相应的订阅器
+function Compile (ele, vm) {
+    this.vm = vm;
+    this.ele = document.querySelector(ele);
+    this.fragment = null;
+    this.init();
+}
+
+Compile.prototype = {
+    init: function () {
+        if (this.ele) {
+            this.fragment = this.nodeToFragment(this.ele);
+            this.compileElement(this.fragment);
+            this.ele.appendChild(this.fragment);
+        } else {
+            console.log('Dom元素不存在');
+        }
+    },
+    // 由于对dom操作比较频繁，先建一个fragment片段，将需要解析的DOM节点存入fragment片段里再进行处理
+    nodeToFragment: function (ele) {
+        var fragment = document.createDocumentFragment();
+        var child = ele.firstChild;
+        while (child) {
+            // 将DOM元素移入fragment中
+            fragment.appendChild(child);
+            child = ele.firstChild;
+        }
+        return fragment;
+    },
+    compileElement: function (ele) {
+        var childNodes = ele.childNodes;
+        var self = this;
+        // 或者直接使用[].slice.call
+        Array.prototype.slice.call(childNodes).forEach( function (node) {
+            var reg = /\{\{(.*)\}\}/;
+            var text = node.textContent;
+            if (self.isElementNode(node)) { // 如果节点是元素节点，就按元素节点的方式来解析
+                self.compile(node);  
+            } else if (self.isTextNode(node) && reg.test(text)) {  // 如果是文本节点且符合{{}}形式
+            self.compileText(node, reg.exec(text)[1]);  // 按文本节点的方式来解析
+            // exec知识：如果exec()找到了匹配的文本，则返回一个结果数组，否则返回null。
+            // 此数组的第0个元素是与正则表达式相匹配的文本，第1个元素是与RegExpObject的第1个子表达式相匹配的文本
+            }
+            if (node.childNodes && node.childNodes.length) {
+                self.compileElement(node); // 继续递归遍历子节点
+            }
+        });
+    },
+    compile: function (node) {
+        var nodeAttrs = node.attributes; // attributes属性返回指定节点的属性集合
+        var self = this;
+        Array.prototype.forEach.call(nodeAttrs, function (attr) {
+            var attrName = attr.name; 
+            if (self.isDirective(attrName)) { // 如果是v-开肉的恶指令
+                var exp = attr.value;  // exp是属性的值
+                var dir = attrName.substring(2); // 截取从索引为2之后的内容
+                if (self.isEventDirective(attrName)) { // attr是事件指令（以v-on:开头的属性）
+                    self.compileEvent(node, self.vm, exp, dir); // 按事件指令来解析
+                } else { // 否则就是v-model指令
+                   self.compileModel(node, self.vm, exp, dir); // 按v-model指令来解析
+                }
+                // 解析好了就将属性从元素中删除
+                node.removeAttribute(attrName);
+            }
+        });
+    },
+    compileText: function (node, exp) {
+        var self = this;
+        var initText = this.vm[exp];
+        this.updateText(node, initText); // 将初始化的数据初始化到视图中
+        new Watcher(this.vm, exp, function (value) { // 生成订阅并绑定更新函数
+            self.updateText(node, value);
+        });
+    },
+    compileEvent: function (node, vm, exp, dir) {
+        var eventType = dir.split(':')[1];
+        var cb = vm.methods && vm.methods[exp]; // 找到需要绑定的事件
+        if (eventType && cb) {
+            // 将相应的事件绑定到节点上
+            // ES5 提供的bind()方法会创建一个函数实例，this值会被绑定到传给bind函数的值
+            node.addEventListener(eventType, cb.bind(vm), false);
+        }
+    },
+    compileModel: function (node, vm, exp, dir) {
+        var self = this;
+        var val = this.vm[exp];
+        this.modelUpdater(node, val);
+        new Watcher(this.vm, exp, function (value) {
+            self.modelUpdater(node, value);
+        });
+
+        node.addEventListener('input', function (e) {
+            var newValue = e.target.value;
+            if (val === newValue) {
+                return;
+            }
+            self.vm[exp] = newValue;
+            val = newValue;
+        });
+    },
+    updateText: function (node, value) {
+        node.textContent = typeof value == 'undefined' ? '' : value;
+    },
+    modelUpdater: function (node, value) {
+        node.value = typeof value == 'undefined' ? '' : value;
+    },
+    isDirective: function (attr) {
+        return attr.indexOf('v-') === 0;
+    },
+    isEventDirective: function (dir) {
+        return dir.indexOf('v-on:') === 0;
+    },
+    isElementNode: function (node) {
+        return node.nodeType == 1;
+    },
+    isTextNode: function (node) {
+        return node.nodeType == 3;
+    }
+}
+
+function SelfVue (options) {
+    var self = this;
+    this.data = options.data;
+    this.methods = options.methods;
+    
+    Object.keys(this.data).forEach(function (key) {
+        self.proxyKeys(key);
+    });
+
+    observe(this.data);
+    new Compile(options.el, this);
+    options.mounted.call(this); // 所有事情处理好后执行mounted函数
+}
+SelfVue.prototype = {
+    proxyKeys: function (key) {
+        var self = this;
+        Object.defineProperty(this, key, {
+            enumerable: false,
+            configurable: true,
+            get: function getter() {
+                return self.data[key];
+            },
+            set: function setter (newVal) {
+                self.data[key] = newVal;
+            }
+        });
+    }
+}
+
+var selfVue = new SelfVue ({
+    el: '#app',
+    data: {
+        title: '这个代码原作者：',
+        name: 'canfoo'
+    },
+    methods: {
+        clickMe: function () {
+            console.log('aaa');
+            this.title = '随便改改：';
+        }
+    },
+    mounted: function () {
+        // window.setTimeout(() => {
+        //     this.title = 'Hello World';
+        // }, 3000);
+    }
+});
+</script>
+</body>
+</html>

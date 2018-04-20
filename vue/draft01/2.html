@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+<div id="app">
+  <ol>
+    <!--v-for指令可以绑定数组的数据来渲染一个项目列表-->
+    <li v-for="todo in todos">
+      {{ todo.text }}
+    </li>
+    <todo-item
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id"
+    ></todo-item>
+  </ol>
+  <div>
+    <p>{{ message }}</p>
+    <button v-on:click="reverseMessage">逆转消息</button>
+    <input v-model="message" >
+  </div>
+</div>
+<script>
+Vue.component('todo-item', {
+  props: ['todo'],
+  template: '<li>{{ todo.text }}</li>'
+})
+var app = new Vue ({
+  el: '#app',
+  data: {
+    todos: [
+      { text: '学习JavaScript' },
+      { text: '学习Vue'},
+      { text: '整个项目'}
+    ],
+    message: '扶朕起来，朕还能学!',
+    groceryList: [
+      { id: 0, text: '蔬菜' },
+      { id: 1, text: '奶酪' },
+      { id: 2, text: '吃的' },
+    ]
+  },
+  methods: {
+    reverseMessage: function () {
+      this.message = this.message.split('').reverse().join('')
+    }
+  }
+})
+</script>
+</body>
+</html>
