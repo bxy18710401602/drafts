@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>练习flex布局</title>
+  <meta charset="utf-8" />
+  <style>
+/*  .content {
+    border: 1px solid red;
+  }*/
+  .flex-container {
+    background-color: green;
+    display: flex;  /* 将父元素设置为flex容器，其所有子元素自动成为flex项目 */  
+  }
+  .center {
+    background-color: yellow;
+    width: 68%;
+    /*height: 700px;*/
+    float: left;
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /*justify-content: space-around;*/
+    /*align-items: stretch;*/
+  }
+  /*解决最后一行数量较少的时候太分开的问题，但这样最后一行和上面的没有很好的对齐*/
+  .center:after {
+    content: "";
+    flex: auto;
+  }
+  .top { 
+    margin: 0 15%;
+    flex-direction: row; /*设置主轴方向，row代表水平(从左到右)，column代表纵向（从上到下），row-reverse(从右到左)，column-reverse（从下到上）*/
+  }
+  .top .flex-item {
+    width: 25%;
+    margin: 10px 5px;
+  }
+  .left .flex-item, .right .flex-item {
+    margin: 5px 10px;
+  }
+  .left {
+    float: left; 
+    width: 15%;
+    flex-direction: column;
+  }
+  .right {
+    float: right;
+    width: 15%;
+    flex-direction: column;
+  }
+  .flex-item {
+    background-color: #fff;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+  }
+  .circle {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 50px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .circle span {
+    /*background-color: green;*/
+    font-size: 50px;
+    font-weight: 700;
+    color: orange;
+  }
+
+  </style>
+</head>
+<body>
+  <div class="content clearfix">
+    <div class="flex-container top">
+      <div class="flex-item"><h1>福</h1></div>
+      <div class="flex-item"><h1>瑞</h1></div>
+      <div class="flex-item"><h1>祥</h1></div>
+      <div class="flex-item"><h1>和</h1></div>
+    </div>
+    <div class="flex-container left">
+      <div class="flex-item"><h1>四</h1></div>
+      <div class="flex-item"><h1>海</h1></div>
+      <div class="flex-item"><h1>祥</h1></div>
+      <div class="flex-item"><h1>云</h1></div>
+      <div class="flex-item"><h1>降</h1></div>
+      <div class="flex-item"><h1>福</h1></div>
+      <div class="flex-item"><h1>来</h1></div>   
+    </div>
+    <div class="center">
+    </div>
+    <div class="flex-container right">
+      <div class="flex-item"><h1>九</h1></div>
+      <div class="flex-item"><h1>州</h1></div>
+      <div class="flex-item"><h1>瑞</h1></div>
+      <div class="flex-item"><h1>气</h1></div>
+      <div class="flex-item"><h1>迎</h1></div>
+      <div class="flex-item"><h1>春</h1></div>
+      <div class="flex-item"><h1>到</h1></div>   
+    </div>     
+  </div>
+  <script type="text/javascript">
+    var center = document.querySelector('.center');
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < 15; i++) {
+      var circle = document.createElement('div');
+      circle.classList.add('circle');
+      var num = document.createElement('span');
+      num.textContent = i + 1;
+      circle.appendChild(num);
+      fragment.appendChild(circle);
+    }
+   center.appendChild(fragment);
+
+
+  </script>
+</body>
+</html>

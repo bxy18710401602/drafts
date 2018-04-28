@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>练习canvas</title>
+  <meta charset="utf-8" />
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tutorial" width="800" height="800"></canvas>
+  <script>
+    var canvas = document.getElementById('tutorial');
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+
+      // canvas原始的形状就只有矩形和线
+
+      // ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+      // ctx.fillRect(30, 30, 50, 50);
+      /* 长方形      
+      ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+      ctx.fillRect(25, 25, 100, 100); //  画一个填充矩形
+      ctx.clearRect(45, 45, 60, 60); // 清楚某范围内的矩形
+      ctx.strokeRect(50, 50, 50, 50); // 画一个描边的矩形
+      */
+
+      // beginPath()用于开始一个新的路径，之后的绘图命令都在以上执行
+      // closePath()添加一条从当前子路径到起点的直线
+      // stroke()通过描边画出图像
+      // fill()通过填充画出图像
+      
+      /*三角形
+      ctx.beginPath();
+      ctx.moveTo(25, 22); // 放置起点
+      ctx.lineTo(35, 15);
+      ctx.lineTo(45, 22);
+      ctx.fill();
+      ctx.closePath();
+
+      ctx.beginPath();
+      ctx.moveTo(105, 22);
+      ctx.lineTo(115, 15);
+      ctx.lineTo(125, 22);
+      ctx.stroke();
+      ctx.closePath();
+      */
+     
+      // 画弧线或者圆时，需要用到arc()或者arcTo()方法
+      // arc(x, y, radius, startAngle, endAngle, anticlockwise)画一个以（x, y）为圆心，radius为半径，从角度startAngle到endAngle的圆弧，anticclockwise表示方向，默认是顺时针，当这个参数为true的时候就是逆时针
+      // arcTo(x1, y1, x2, y2, radius) 通过给定的两点和弧度画圆弧
+      /* 笑脸
+      ctx.beginPath();
+      ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
+      ctx.moveTo(110, 75);
+      ctx.arc(75, 75, 35, 0, Math.PI, false);  // Mouth (clockwise)
+      ctx.moveTo(65, 65);
+      ctx.arc(60, 65, 5, 0, Math.PI * 2, true);  // Left eye
+      ctx.moveTo(95, 65);
+      ctx.arc(90, 65, 5, 0, Math.PI * 2, true);  // Right eye
+      ctx.stroke();
+      */
+
+      /*画出不同的弧线
+      for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 3; j++) {
+          ctx.beginPath();
+          var x = 25 + j * 50; // 每个相邻图形，x轴和y轴的差距为50
+          var y = 25 + i * 50;
+          var radius = 20;
+          var startAngle = 0;
+          var endAngle = Math.PI + (Math.PI * j) / 2; // 设置不同的结束角度
+          var anticlockwise = i % 2 !== 0; // 当i为奇数时是逆时针
+
+          ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
+          if (i > 1) {
+            ctx.fill(); 
+          } else {
+            ctx.stroke();
+          }
+        }
+      }
+      */
+
+      // quadraticCurveTo(cp1x, cp2x, x, y) 画二次的贝塞尔曲线
+      // bezierCurveTo(cp1x, xp1y, cp2x, cp2y, x, y) 画三次的贝塞尔曲线
+
+      /* 画一个对话框
+      ctx.beginPath();
+      ctx.moveTo(75, 25);
+      ctx.quadraticCurveTo(25, 25, 25, 62.5);
+      ctx.quadraticCurveTo(25, 100, 50, 100);
+      ctx.quadraticCurveTo(50, 120, 30, 125);
+      ctx.quadraticCurveTo(60, 120, 65, 100);
+      ctx.quadraticCurveTo(125, 100, 125, 62.5);
+      ctx.quadraticCurveTo(125, 25, 75, 25);
+      ctx.stroke();
+      */
+
+      /*画一个爱心
+      ctx.beginPath();
+      ctx.moveTo(75, 40);
+      ctx.bezierCurveTo(75, 37, 70, 25, 50, 25);
+      ctx.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5);
+      ctx.bezierCurveTo(20, 80, 40, 102, 75, 120);
+      ctx.bezierCurveTo(110, 102, 130, 80, 130, 62.5);
+      ctx.bezierCurveTo(130, 62.5, 130, 25, 100, 25);
+      ctx.bezierCurveTo(85, 25, 75, 37, 75, 40);
+      ctx.fill();
+      */
+      
+      /*
+      Path2D() 构造函数返回一个Path2D对象实例
+      new Path2D(); // 空的path对象
+      new Path2D(path); // 从另一个path2D对象复制
+      new Path2D(d);// 从SVG路径数据来的路径
+      */
+
+      /*用path 2D画一个圆和一个方形
+      var rectangle = new Path2D();
+      rectangle.rect(10, 10, 50, 50);
+
+      var circle = new Path2D();
+      circle.moveTo(125, 35);
+      circle.arc(100, 35, 25, 0, 2 * Math.PI);
+
+      ctx.stroke(rectangle);
+      ctx.fill(circle);
+     */
+
+     // fillStyle = color 设置形状的填充颜色
+     // strokeStyle = color 设置形状的边框颜色
+     /* 设置填充颜色
+     for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 6; j++) {
+        ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
+                         Math.floor(255 - 42.5 * j) + ', 0)';
+        ctx.fillRect(j * 25, i * 25, 25, 25);                 
+      }
+     }
+     */
+     /* 设置轮廓颜色
+     for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 6; j++) {
+        ctx.strokeStyle = 'rgb(0,' + Math.floor(255 - 42.5 * i) + ',' +
+                           Math.floor(255 - 42.5 * j) + ')';
+        ctx.beginPath();
+        ctx.arc(12.5 + j * 25, 12.5 + i * 25, 10, 0, Math.PI * 2, true);
+        ctx.stroke();                   
+      }
+     }
+     */
+    /*通过globalAlpha来设置全局的不透明度
+    ctx.fillStyle = '#FD0';
+    ctx.fillRect(0, 0, 75, 75);
+    ctx.fillStyle = '#6C0';
+    ctx.fillRect(75, 0, 75, 75);
+    ctx.fillStyle = '#09F';
+    ctx.fillRect(0, 75, 75, 75);
+    ctx.fillStyle = '#F30';
+    ctx.fillRect(75, 75, 75, 75);
+    ctx.fillStyle = '#FFF';
+    
+    ctx.globalAlpha = 0.2; //设置之后所有图形的不透明度
+    for (var i = 0; i < 7; i++) {
+      ctx.beginPath();
+      ctx.arc(75, 75, 10 + 10 * i, 0, Math.PI * 2, true);
+      ctx.fill();
+  }
+  */
+ 
+   /*根据颜色rgba中的不透明度来设置颜色的不透明度
+    ctx.fillStyle = 'rgb(255, 221, 0)';
+    ctx.fillRect(0, 0, 150, 37.5);
+    ctx.fillStyle = 'rgb(102, 204, 0)';
+    ctx.fillRect(0, 37.5, 150, 37.5);
+    ctx.fillStyle = 'rgb(0, 153, 255)';
+    ctx.fillRect(0, 75, 150, 37.5);
+    ctx.fillStyle = 'rgb(255, 51, 0)';
+    ctx.fillRect(0, 112.5, 150, 37.5);
+
+    for (var i = 0; i < 10; i++) {
+      ctx.fillStyle = 'rgba(255, 255, 255,' + (i+1)/10 + ')';
+      for (var j = 0; j < 4; j++) {
+        ctx.fillRect(5 + i * 14, 5 + j * 37.5, 14, 27.5);
+      }
+    }
+   */
+    // lineWidth = value设置线条的宽度，lineCap = type设置线条的尾端，lineJoin = type设置线条拐角部分的样式， miterLimit = value设置斜切部分的样式，getLineDash()得到当前的虚线图形数组，setLineDash(segments)，设置当前的虚线模型，lineDashOffset = value指定从哪开始一个虚线数组
+    
+    /* lineCap的值可以为'butt', 'round',和'square'
+    var lineCap = ['butt', 'round', 'square'];
+
+    // Draw guides
+    ctx.strokeStyle = '#09f';
+    ctx.beginPath();
+    ctx.moveTo(10, 10);
+    ctx.lineTo(140, 10);
+    ctx.moveTo(10, 140);
+    ctx.lineTo(140, 140);
+    ctx.stroke();
+
+    // Draw lines
+    ctx.strokeStyle = 'black';
+    for (var i = 0; i < lineCap.length; i++) {
+      ctx.lineWidth = 15;
+      ctx.lineCap = lineCap[i];
+      ctx.beginPath();
+      ctx.moveTo(25 + i * 50, 10);
+      ctx.lineTo(25 + i * 50, 140);
+      ctx.stroke();
+    }
+    */
+
+    /* lineJoin的值可以为'round', 'bevel', 和'miter'
+    var lineJoin = ['round', 'bevel', 'miter'];
+    ctx.lineWidth = 10;
+    for (var i = 0; i < lineJoin.length; i++) {
+      ctx.lineJoin = lineJoin[i];
+      ctx.beginPath();
+      ctx.moveTo(-5, 5 + i * 40);
+      ctx.lineTo(35, 45 + i * 40);
+      ctx.lineTo(75, 5 + i * 40);
+      ctx.lineTo(115, 45 + i * 40);
+      ctx.lineTo(155, 5 + i * 40);
+      ctx.stroke();
+    }
+    */
+    // miterLimit显示线条结合部分倾斜的程度，在<canvas>中的默认大小是10.0
+    // setLineDash()和lineDashOffset()用于画虚线
+    /*
+    var offset = 0;
+    function draw () {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setLineDash([4,2]); // 数组中的内容设置的是虚线小点的长度以及虚线小点之间的间距
+      ctx.lineDashOffset = -offset; //设置从什么位置开始虚线
+      ctx.strokeRect(10, 10, 100, 100);
+    }
+    function march () {
+      offset++;
+      if (offset > 16) {
+        offset = 0;
+      }
+      draw();
+      setTimeout(march, 100);
+    }
+    march();
+    */
+    // createLinearGradient(x1, y1, x2, y2)创建线性渐变
+    // createRadialGradient(x1, y1, r1, x2, y2, r2) //创建圆角渐变
+    // gradient.addColorStop(position, color) position是0.0到1.0之间的一个值，表示颜色所在的相对位置，color是表示颜色的字符串
+    /* fillStyle和strokeStyle都能接收一个gradient对象
+    // Create gradients
+    var lingrad = ctx.createLinearGradient(0, 0, 0, 150);
+    lingrad.addColorStop(0, '#00ABEB');
+    lingrad.addColorStop(0.5, '#fff');
+    lingrad.addColorStop(0.5, '#26C000');
+    lingrad.addColorStop(1, '#fff');
+
+    var lingrad2 = ctx.createLinearGradient(0, 50, 0, 95);
+    lingrad2.addColorStop(0.5, '#000');
+    lingrad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+    // assign gradients to fill and stroke styles
+    ctx.fillStyle = lingrad;
+    ctx.strokeStyle = lingrad2;
+    
+    // draw shapes
+    ctx.fillRect(10, 10, 130, 130);
+    ctx.strokeRect(50, 50, 50, 50);
+    */
+
+  /*
+      // Create gradients
+  var radgrad = ctx.createRadialGradient(45, 45, 10, 52, 50, 30);
+  radgrad.addColorStop(0, '#A7D30C');
+  radgrad.addColorStop(0.9, '#019F62');
+  radgrad.addColorStop(1, 'rgba(1, 159, 98, 0)');
+  
+  var radgrad2 = ctx.createRadialGradient(105, 105, 20, 112, 120, 50);
+  radgrad2.addColorStop(0, '#FF5F98');
+  radgrad2.addColorStop(0.75, '#FF0188');
+  radgrad2.addColorStop(1, 'rgba(255, 1, 136, 0)');
+
+  var radgrad3 = ctx.createRadialGradient(95, 15, 15, 102, 20, 40);
+  radgrad3.addColorStop(0, '#00C9FF');
+  radgrad3.addColorStop(0.8, '#00B5E2');
+  radgrad3.addColorStop(1, 'rgba(0, 201, 255, 0)');
+
+  var radgrad4 = ctx.createRadialGradient(0, 150, 50, 0, 140, 90);
+  radgrad4.addColorStop(0, '#F4F201');
+  radgrad4.addColorStop(0.8, '#E4C700');
+  radgrad4.addColorStop(1, 'rgba(228, 199, 0, 0)');
+  
+  // draw shapes
+  ctx.fillStyle = radgrad4;
+  ctx.fillRect(0, 0, 150, 150);
+  ctx.fillStyle = radgrad3;
+  ctx.fillRect(0, 0, 150, 150);
+  ctx.fillStyle = radgrad2;
+  ctx.fillRect(0, 0, 150, 150);
+  ctx.fillStyle = radgrad;
+  ctx.fillRect(0, 0, 150, 150);
+  */
+
+  // 使用createPattern()创建图像
+  // 内容有点多，后面的就只是在MDN上看看效果了
+    } else {
+      // 不支持canvas的代码
+    }
+  </script>
+</body>
+</html>

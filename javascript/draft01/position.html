@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>练习position布局</title>
+  <meta charset="utf-8" />
+  <style>
+    .popup {
+      width: 150px;
+      border: 1px solid green;
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .popup.show {
+      display: block;
+    }
+    .advertisement {
+      width: 100px;
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 10px;
+      position: fixed;
+      right: 0;
+      bottom: 100px;
+    }
+    .closeBtn {
+      cursor: pointer;
+      position: relative;
+      left: 90px;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup"> 
+    <p>猥琐发育，别浪！</p>
+    <p>
+      <button onclick="closeTest()">关闭</button>
+    </p>
+  </div>
+  <div class="advertisement">
+    <span class="closeBtn" onclick="closeAdvert()">X</span>
+    <p>这是个浮窗广告</p>
+  </div>
+  <button onclick="test()">打开弹窗</button>
+<script>
+  var popup = document.querySelector('.popup');
+  console.log(popup)
+  function test () {
+    if (popup.className.indexOf('show') == -1) {
+      popup.className += ' show';
+      console.log(popup.className);
+    }
+  }
+  // 在原生JS中取名为close之类的词，点击事件会无效，换个词就行了
+  function closeTest () {
+    console.log('aaa');
+    if (popup.className.indexOf('show') > -1) {
+      popup.className = popup.className.replace(' show', '');
+      console.log(popup.className);
+    }   
+  }
+
+  function closeAdvert () {
+    var ad = document.querySelector('.advertisement');
+    document.body.removeChild(ad);
+  }
+</script>
+</body>

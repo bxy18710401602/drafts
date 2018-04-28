@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 参照https://blog.csdn.net/ali1995/article/details/52734253 来写的-->
+  <meta charset="utf-8" />
+  <title>练习画板</title>
+  <style>
+    #penal {
+      width: 800px;
+      height: 800px;
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div id="select">
+      <button id="pen">铅笔</button>
+      <button id="line">直线</button>
+      <button id="rect">矩形</button>
+      <button id="arc">圆形</button>
+      <button id="robber">橡皮擦</button>
+      <button id="img">图片</button>
+      <button id="save">保存</button>
+      <input type="file" id="file" name="img" style="display: none;" />
+      <input type="color" id="color" />
+      <input type="number" id="lineWidth" />
+    </div>
+    <canvas id="penal" width="800" height="800"></canvas>
+  </div>
+  <script>
+     window.onload = function () {
+      var draw = new Draw();
+      draw.init();   
+     };
+    var Draw = function () {
+      this.type = 'pen'; // 选择类型，默认为铅笔
+      this.penal = document.getElementById('penal');
+      this.pen = this.penal.getContext('2d');
+      this.isDraw = false; 
+      this.color = document.getElementById('color');
+      this.lineWidth = document.getElementById('lineWidth');
+      this.select = document.getElementById('select');
+      this.img = new Image(); //用于绘制直线，矩形，圆形
+    }
+    Draw.prototype.init = function () {
+      var self = this;
+      var originX = null;
+      var originY = null;
+
+      this.select.addEventListener('click', function (event){
+        switch (event.target.id) {
+          case 'pen': 
+            self.type = 'pen';
+            break;
+          case 'line': 
+            self.type = 'line';
+            break;
+          case 'rect': 
+            self.type = 'rect';
+            break;
+          case 'arc': 
+            self.type = 'arc';
+            break;    
+          case 'robber': 
+            self.type = 'robber';
+            break;  
+          case 'img': 
+            img(self);
+            break;  
+          case 'save': 
+            save(self);
+            break;
+        }
+      }, false);
+
+      this.penal.addEventListener('mousedown', function (event) {
+        self.isDraw = true;
+        originX = event.clientX - self.penal.offsetLeft; // 在画布上的x坐标
+        originY = event.clientY - self.penal.offsetTop; // 在画布上的y坐标
+        self.pen.moveTo(originX, originY);
+        self.pen.strokeStyle = self.color.value; // 设置边框的颜色
+        self.pen.lineWidth = self.lineWidth.value; // 设置线条的宽度
+        self.pen.beginPath();
+      }, false);
+
+      this.penal.addEventListener('mouseleave', function () {
+        if (self.isDraw) {
+          self.pan.closePath();
+          self.isDraw = false;
+        }
+      }, false);
+
+      this.penal.addEventListener('mouseup', function (event) {
+        if (self.isDraw) {
+          self.pen.closePath();
+          self.isDraw = false;
+        }
+      }, false);
+
+      this.penal.addEventListener('mousemove', function (event) {
+        if (self.isDraw) {
+          var x = event.clientX - self.penal.offsetLeft; // 移动工程中的x坐标
+          var y = event.clientY - self.penal.offsetTop; // 移动过程中的y坐标
+
+          if (self.type == 'pen') {
+            self.pen.lineTo(x, y);
+            self.pen.stroke();
+          }
+          if (self.type == 'robber') {
+            self.pen.strokeStyle = '#ccc';
+            self.pen.clearRect(x-10, y-10, 20, 20);
+          }
+          var newOriginX = originX, newOriginY = originY;
+          if (self.type == 'line') {
+            self.pen.clearRect(0, 0, 800, 800);
+            self.pen.drawImage(self.img, 0, 0);
+            self.pen.beginPath();
+
+            self.pen.moveTo(originX, originY);
+            self.pen.lineTo(x, y);
+            self.pen.stroke();
+          } else if (self.type == 'rect') {
+            self.pen.clearRect(0, 0, 800, 800);
+            self.pen.drawImage(self.img, 0, 0);
+            self.pen.beginPath();
+
+            if (x < originX) {
+              newOriginX = x;
+            }
+            if (y < originY) {
+              newOriginY = y;
+            }
+            self.pen.rect(newOriginX, newOriginY, Math.abs(x-originX), Math.abs(y-originY));
+            self.pen.stroke();
+
+            self.pen.closePath();
+          } else if (self.type == 'arc') {
+            self.pen.clearRect(0, 0, 800, 800);
+            self.pen.drawImage(self.img, 0, 0);
+            self.pen.beginPath();
+
+            if (x < originX) {
+              newOriginX = x;
+            }
+            if (y < originY) {
+              newOriginY = y;
+            }
+            var r = Math.sqrt(Math.abs(x-originX) * Math.abs(x-originX) + Math.abs(y-originY) * Math.abs(y-originY));
+            self.pen.arc(Math.abs(x-originX) + newOriginX, Math.abs(y-originY) + newOriginY, r, 0, 2*Math.PI);
+            self.pen.fillStyle = self.color.value;
+            self.pen.fill();
+            self.pen.closePath();
+          }
+        }
+      }, false);
+
+      this.penal.addEventListener('mousedown', function (event) {
+        self.isDraw = true;
+        self.img.src = self.penal.toDataURL('image/png');
+
+        originX = event.clientX - self.penal.offsetLeft; // x坐标
+        originY = event.clientY - self.penal.offsetTop; // y坐标
+
+        self.pen.moveTo(originX, originY);
+        self.pen.strokeStyle = self.color.value;
+        self.pen.lineWidth = self.lineWidth.value;
+        self.pen.beginPath();
+      }, false);
+
+    }
+    
+    function img (self) {
+      document.getElementById('file').click(); // 默认触发选择文件操作
+      document.getElementById('file').onchange = function (event) {
+        var reader = new FileReader(); // FileReader用来读取文件
+        reader.readAsDataURL(event.target.files[0]); // readAsDataURL会读取指定的Bolb或File对象。读取操作完成的时候，readState会变成已完成，并触发loadend事件，同时result属性将包含一个data：URL格式的字符串（base64编码）以表示所读取文件的内容。
+        reader.onload = function (event) {
+          var img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            self.pen.drawImage(img, 0, 0); // 把图片直接画在画布上, drawImage(image, dx, dy)用于在Canvas上绘制图像
+          } 
+        }
+      }
+    }
+
+    function save (self) {
+      var a = document.createElement('a');
+      a.href = self.penal.toDataURL('image/png'); //toDataURL返回一个包含图片展示的data URL
+      a.download = 'image.jpeg'; // download属性用于指定下载文件的文件min
+      a.id = 'download';
+      a.innerHTML = 'download';
+      document.body.appendChild(a);
+      document.getElementById('download').style.display = 'none';
+      document.getElementById('download').click();
+    }
+
+    
+
+    
+  </script>
+</body>
+</html>
