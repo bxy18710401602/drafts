@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>使用XMLHttpRequest上传文件-简洁版</title>
+    <meta charset="utf-8" />
+    <style>
+      .row {
+        margin: 15px 0;
+      }
+      .progress-bar {
+        display: none;
+      }
+      .show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="form1" enctype="multipart/form-data" method="post" action="upload.php">
+      <div class="row">
+        <label for="fileToUpload">选择一个文件上传</label><br/>
+        <!--当文件类型的输入框被点击的时候，就能得到一个FileList对象，FileList对象是File对象的集合，每个File对象都有name,type和size三个属性-->
+        <input type="file" accept="image/png, image/jpeg, image/gif, image/jpg" name="fileToUpload" id="fileToUpload" onchange="fileSelected()" />
+      </div>
+      <div id="fileName"></div>
+      <div id="fileSize"></div>
+      <div id="fileType"></div>
+      <div class="row">
+        <input type="button" onclick="uploadFile()" value="上传" />
+      </div>
+      <div id="progressNumber"></div>
+      <progress id="progressBar" class="progress-bar" max="100"></progress>
+    </form>
+    <script>
+      // formData实例是一个名值对的集合，代表表单的数据
+      var fd = new FormData();
+      fd.append('author', 'Shiv Kumar');
+      fd.append('name', '这是个名字');
+
+      function fileSelected () {
+        var file = document.getElementById('fileToUpload').files[0];
+        if (file) {
+          var fileSize = 0;
+          if (file.size > 1024 * 1024) {
+            fileSize = Math.round(file.size * 100 / (1024 * 1024) / 100) + 'MB';
+          } else {
+            fileSize = Math.round(file.size * 100 / 1024 / 100) + 'KB';
+          }
+          document.getElementById('fileName').innerHTML = 'Name: ' + file.name;
+          document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize;
+          document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
+          // uploadFile();
+        }
+      }
+      function uploadFile () {
+        var xhr = new XMLHttpRequest();
+        fd.append('fileToUpload', document.getElementById('fileToUpload').files[0])     
+       // 当上传发生的时候获取上传进度信息
+        xhr.upload.addEventListener('progress', uploadProgress, false);
+        xhr.addEventListener('load', uploadComplete, false);
+        xhr.addEventListener('error', uploadFailed, false);
+        xhr.addEventListener('abort', uploadCancled, false);
+
+        xhr.open('POST', 'upload.php');
+        xhr.send(fd);
+      }
+
+      function uploadProgress (evt) {
+        if (document.getElementById('fileToUpload').files[0]) {
+          if (evt.lengthComputable) {
+          var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+          // 显示进度条
+          document.getElementById('progressBar').classList.add('show');
+          setTimeout(progressChange(percentComplete), 1000)
+          // 显示文字
+          document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
+        }
+          else {
+            document.getElementById('progressNumber').innerHTML = '无法计算';
+          }
+        } else {
+          alert('请选择文件！');
+        }
+      }
+
+      function uploadComplete (evt) {
+        // alert(evt.target.responseText);
+        console.log(evt.target.responseText);
+      }
+
+      function uploadFailed (evt) {
+        alert('There was an error attempting to upload the file.');
+      }
+
+      function uploadCancled (evt) {
+        alert('The upload has been cancled by the user or the browser droppeed the connection.');
+      }
+
+      function progressChange (val) {
+        document.getElementById('progressBar').value = val;
+      }
+    </script>
+  </body>
+</html>
