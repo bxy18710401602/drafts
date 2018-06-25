@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <script>
+  function test()
+    {
+      let a = 'a a[a b = c]<br />';  
+      let re = /\[[^\]]+\]/g // 匹配[]以及中间的内容           
+      let result = a.replace(re, '**'); 
+      return result;
+    } 
+  let result = test();
+  console.log(result)
+  </script>
+</body>
+</html>
