@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    input {
+      outline: none;
+      -webkit-appearance: none;
+      border-radius: 0;      
+    }
+    input::-webkit-input-placeholder{
+      color:red;
+    }
+    input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+      color:red;
+    }
+    input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+      color:red;
+    }
+    input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+      color:red;
+    }
+    .test {
+      height: 200px;
+      width: 200px;
+      border-radius: 10px;
+      background-color: purple;
+      box-shadow: 5px 5px 5px gray,  -5px 5px 5px gray;
+      /*width:100px;*/
+      transition: width 2s;
+      -moz-transition: width 2s; /* Firefox 4 */
+      -webkit-transition: width 2s; /* Safari 和 Chrome */
+      -o-transition: width 2s; /* Opera */
+    }
+    .test:hover {
+      width: 100px;
+      transform: rotate(20deg);
+      -webkit-transform: rotate(20deg);
+      -moz-transform: rotate(20deg);
+    }
+    .test1 {
+      position: relative;
+      animation: testmove 5s linear 0s infinite;
+      height: 100px;
+      width: 100px;
+      background-color: yellow;
+      margin: 10px;
+    }
+    .test1 span{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: inline-block;
+      font-size: 30px;
+      padding: 20px;
+    }
+
+    @keyframes testmove {
+      from {
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <from>
+      <input type="text" placeholder="测试测试"/>
+    </from>
+    <div class="test">
+      <p>测试测试测试测试</p>
+    </div>
+    <div class="test1">
+      <span>饿</span>
+    </div>
+    </v-container>
+    <script>
+      
+    </script>
+  </body>
+</html>
