@@ -2,13 +2,35 @@ window.onload = main;
 
 function main () {
   let data = getData();
+  let tree = document.querySelector('.tree');
+  createTree(tree, data);
   parentItemChecked();
-  let checkedNodes = selectedNodes();
+  clickTexts();
 }
 
 // 创建下拉选项树
-function createTree (data) {
-  
+function createTree (parent, data) {
+  let ul = document.createElement('ul');
+  parent.appendChild(ul);
+  let i = 0, len = data.length;
+  for (i; i < len; i++) {
+    let item = data[i];
+    let label = item.label;
+    let val = item.value;
+    let li = document.createElement('li');
+    let input = document.createElement('input');
+    let text = document.createElement('span');
+    text.textContent = label;
+    input.type = 'checkbox';
+    input.value = val;
+    li.appendChild(input);
+    li.appendChild(text);
+    if (item.children && item.children.length > 0) {
+      let childrenItems = item.children;
+      createTree(li, childrenItems);
+    }
+    ul.appendChild(li);
+  }
 }
 
 // 父级节点被选中时
@@ -30,16 +52,49 @@ function selecteChildrenInputs (event) {
   } else {
     check(item, false);
   }
+  let checkedNodes = selectedNodes();
+  console.log(checkedNodes, '选中节点的值');
 }
 
 // 父级选项点击时
 function check (item, value) {
-  let nextNode = item.nextElementSibling;
+  let nextNode = item.nextElementSibling.nextElementSibling;
   let childrenInputs = nextNode && nextNode.querySelectorAll('input[type=checkbox]');
   if (childrenInputs) {
     let j = 0, length = childrenInputs.length;
     for (j; j < length; j++) {
       childrenInputs[j].checked = value;
+    }
+  }
+  // 当多选框被选中时显示子选项
+  if (value) {
+    if (nextNode.className.indexOf('hidden') > -1) {
+      nextNode.className = nextNode.className.slice(0, -7);
+    }
+  }
+}
+
+// 文本被点击时
+function clickTexts () {
+  let spans = document.querySelectorAll('.tree span');
+  if (spans) {
+    let i = 0, len = spans.length;
+    for (i; i < len; i++) {
+      let span = spans[i];
+      span.addEventListener('click', clickText, false);
+    }
+  }
+}
+
+function clickText (event) {
+  let node = event.target;
+  let sibling = node.nextElementSibling;
+  if (sibling && sibling.nodeName == 'UL') {
+    let hasHidden = sibling.className.indexOf('hidden');
+    if (hasHidden == -1) {
+      sibling.className += ' hidden';
+    } else {
+      sibling.className = sibling.className.slice(0, -7);
     }
   }
 }
@@ -53,41 +108,54 @@ function childItemChecked () {
 function selectedNodes () {
   let checkboxs = document.querySelectorAll('input[type=checkbox]');
   if (checkboxs) {
-    let selectedItem = Array.prototype.map.call(checkboxs, function (item, index) {
+    var selectedItems = Array.prototype.map.call(checkboxs, function (item, index) {
       if (item.checked) {
         return item.value;
       } 
     })
   }
+  let selectedData = selectedItems.filter((item) => {
+    return item;
+  });
+  return selectedData;
 }
 
 // 下拉选项框的数据
 function getData () {
   let arr = [], i = 1;
-  for (i; i < 11; i++) {
+  for (i; i < 6; i++) {
     let data =   {
       label: `一级选项${i}`,
-      value: '1',
+      value: `${i}`,
       children: [{
-        label: `二级选项${i}`,
-        value:'1.1',
+        label: `二级选项${i}.${i}`,
+        value:`${i}.${i}`,
         children: [{
-          label: `三级选项${i}`,
-          value: '1.1.1',
+          label: `三级选项${i}.${i}.${i}`,
+          value: `${i}.${i}.${i}`,
           children: [{
-            label: `四级选项${i}`,
-            value: '1.1.1.1',
+            label: `四级选项${i}.${i}.${i}.${i}`,
+            value: `${i}.${i}.${i}.${i}`,
             children: [{
-              label: `五级选项${i}`,
-              value: '1.1.1.1.1',
+              label: `五级选项${i}.${i}.${i}.${i}.${i}`,
+              value: `${i}.${i}.${i}.${i}.${i}`,
               children: [{
-                label: `六级选项${i}`,
-                value: '1.1.1.1.1.1'
+                label: `六级选项${i}.${i}.${i}.${i}.${i}.${i}`,
+                value: `${i}.${i}.${i}.${i}.${i}.${i}`
               }]
             }]
           }]
         }]
-      }]
+      },
+      {
+        label: `二级选项${i}.${i+1}`,
+        value: `${i}.${i+1}`
+      },
+      {
+        label: `二级选项${i}.${i+2}`,
+        value: `${i}.${i+2}`
+      }
+      ]
     };
     arr.push(data)
   }

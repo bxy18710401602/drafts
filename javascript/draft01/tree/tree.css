@@ -1,0 +1,16 @@
+.tree ul {
+  font-size: 15px;
+}
+.tree li {
+  list-style-type: none;
+  margin-left: -20px;
+  line-height: 25px;
+  cursor: pointer;
+}
+.tree {
+  user-select: none;
+}
+.hidden {
+  height: 0;
+  overflow: hidden;
+}

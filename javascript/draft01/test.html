@@ -9,8 +9,11 @@
     <audio src="http://xesfile.xesimg.com/knowledge_material/audio/15305179306044.mp3">
                 您的浏览器不支持audio标签
     </audio>
+    <div id="test" class="one two three"></div>
   </div>
   <script>
+  let test = document.getElementById('test');
+  console.log(test.classList, '类名列表');
   // 创建文档片段
   var fragment = document.createDocumentFragment();
 
