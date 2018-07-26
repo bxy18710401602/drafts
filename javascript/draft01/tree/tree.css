@@ -102,12 +102,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 230px;
-  height: 130px;
+  width: 245px;
+  height: 153px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 10px;
+  padding: 25px 10px 10px 10px;
+}
+.box label {
+  font-size: 14px;
+  display: inline-block;
+  width: 50px;
+  text-align: right;
 }
 .close-mask {
   position: absolute;
@@ -121,9 +127,7 @@
   padding-left: 154px;
 }
 .input-name {
-  margin-top: 32px;
-  margin-left: 8px;
-  width: 200px;
+  width: 152px;
   height: 25px;
   border: 1px solid #bbb;
   border-radius: 5px;
