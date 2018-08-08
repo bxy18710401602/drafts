@@ -1,0 +1,1 @@
+**This practice refers to the website : [ECMAScript 6 入门](http://es6.ruanyifeng.com/)**

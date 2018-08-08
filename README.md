@@ -1,2 +1,2 @@
 # drafts
-Some cluttered practice code references to the published code on the web.
+This is some messy code, some of which refer to the code on the web.

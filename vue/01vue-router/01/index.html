@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>练习vue-router</title>
+    <meta charset="utf-8" />  
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>  
+  </head>
+  <body>
+    <div id="app">
+      <h1>Hello App !</h1>
+      <p>用户id：<input type="text" v-model="id"/></p>
+      <p>
+        <router-link to="/foo">前往Foo</router-link>
+        <router-link to="/bar">前往Bar</router-link>
+        <router-link :to=`/user/${id}`>前往用户</router-link>
+      </p>
+      <router-view></router-view>
+    </div>
+  <script src="./main.js"></script>
+  </body>
+</html>

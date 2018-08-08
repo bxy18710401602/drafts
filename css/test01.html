@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <style>
+      html {
+        font-size: 20px;
+      }
+      .text1 {
+        width: 120px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+      }
+      .text2 {
+        width: 120px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+      }
+      .test {
+        background-image: url('imgs/test.jpg');
+        color: transparent;
+        -webkit-background-clip: text;
+      }
+      .test01 {
+        font-size: 1rem;
+      }
+      .test02 {
+        font-size: 20px;
+      }
+      table {
+        border: 1px solid black;
+        border-radius: 10px;
+      }
+      td {
+          border-radius: 0;
+        }
+        input {
+          outline: none;
+          appearance: none;
+          -moz-appearance: none;
+          -webkit-appearance: none;
+          border-radius: 0; 
+        }
+        .checkbox {
+          position: relative;
+          padding: 0;
+        }
+        input[type=checkbox]:before{
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 12px;
+          height: 12px;
+          line-height: 12px;
+          text-align: center;
+          color: white;
+          font-size: 12px;
+          background-color: #fff;
+          border: 1px solid #E2E5EB;
+          border-radius: 2px;
+        }
+        input[type=checkbox]:checked:before {
+          background-color: #8e60ff;
+          border-color: #8e60ff;
+          content: '★';
+        }
+        .picture {
+          height: 110px;
+          width: 110px;
+          border-radius: 4px;
+          text-align: center;
+          overflow: hidden;
+          background-image: url('imgs/dmx.jpg');
+          background-repeat: no-repeat;
+          background-position: top center;
+          background-size: cover;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="test test01">实迷途其未远</h1>
+      <h1 class="test test02">觉今是而昨非</h1>
+      <div class="checkbox">
+        <input type="checkbox" />
+      </div>
+
+    </div>
+    <div>
+      <table>
+        <th>
+          <td onclick="test()">事件跳转</td>
+          <td><a href="https://github.com/Unano" target="_blank">a标签跳转</a></td>
+          <td>测试</td>
+        </th>
+      </table>
+    </div>
+    <div class="text">
+      <p class="text1">
+        测试单行的省略号。单行的省略号单行的省略号，单行的省略号省略号省略号。
+      </p>
+      <p class="text2">
+        测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号 测试多行的省略号
+      </p>
+    </div>
+    <div class="picture">
+      <!-- <img src="imgs/dmx.jpg" /> -->
+    </div>
+    <script>
+      function test () {
+        // window.location.href = 'https://github.com/Unano';
+        window.open("https://github.com/Unano");
+      }
+    </script>
+  </body>
+</html>
