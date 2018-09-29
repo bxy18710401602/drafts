@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Title</title>
+      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  </head>
+  <body>
+    <div id="app">
+        {{message}}
+      <a-component :todos="todos">
+        <template slot-scope="slotScopes"><!-- 不知为何没有实现想要的效果 -->
+          <span v-if="slotScopes.todo.isComplete">✓</span>
+          {{ slotScopes.todo.text }}
+        </template>
+        <!-- 按钮名称
+        <div slot="some">一些无聊的内容</div> -->
+      </a-component>
+    </div>
+    <script>
+      Vue.component('a-component', {
+        props: ['todos'],
+        data () {
+          return {
+            message: '组件文字'
+          }
+        },
+        template: `
+          <div>
+            <ul>
+              <li v-for="todo in todos" v-bind:key="todo.id">
+                <slot v-bind:todo="todo">
+                  {{ todo.text }}
+                </slot>
+              </li>
+            </ul>
+            // <button>
+            // <slot></slot>
+            // </button>
+            // <slot name="some"></slot>
+            // <p>{{message}}</p>
+          </div>
+        `
+      })
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: '测试测试',
+          todos: [{
+              text: '写作',
+              isComplete: false
+            },{
+              text: '睡觉',
+              isComplete: true
+            },{
+              text: '绘画',
+              isComplete: false
+            }]
+        }
+      })
+    </script>
+  </body>
+</html>
+

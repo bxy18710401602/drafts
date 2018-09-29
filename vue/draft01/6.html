@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Title</title>
+      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  </head>
+  <body>
+    <div id="app" v-demo:foo.a.b="message">
+      <input type="text" v-focus/>
+    </div>
+    <script>
+      // 注册一个全局自定义指令 v-focus
+      Vue.directive('focus', {
+        // 钩子函数的参数有： el、binding、vnode、oldVnode
+        inserted: function (el) {
+          el.focus()
+        }
+        // bind: 只调用一次，指令第一次绑定到元素时调用
+        // insert: 被绑定元素插入父节点时调用
+        // update: 所有组件的VNode更新时调用
+        // componentUpdate: 指令在所有组件的Vnode及其子VNode全部更新的时候调用
+        // unbind: 只调用一次，与元素解绑时调用
+      })
+      Vue.directive('demo', {
+        bind:  function (el, binding, vnode) {
+          var s = JSON.stringify
+          el.innerHTML = `
+              name: ${s(binding.name)} <br>
+              value: ${s(binding.value)} <br>
+              expression: ${s(binding.expression)} <br>
+              argument: ${s(binding.arg)} <br>
+              modifiers: ${s(binding.modifiers)} <br>
+              vnode keys: ${Object.keys(vnode).join()} <br>
+          `
+        }
+      })
+      var app =  new Vue({
+        el: '#app',
+        data: {
+          message: '测试测试'
+        }
+      })
+    </script>
+  </body>
+</html>
+

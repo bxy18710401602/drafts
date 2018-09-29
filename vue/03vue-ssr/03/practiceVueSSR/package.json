@@ -1,0 +1,9 @@
+{
+  "name": "practice-vue-ssr",
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0"
+  }
+}

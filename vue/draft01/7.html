@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Title</title>
+      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>
+        <a name="hello-world" href="#hello-world">
+          Hello World
+        </a>
+      </h1>
+      <anchored-heading :level="1">测试测试</anchored-heading>
+      <anchored-heading :level="2">测试测试</anchored-heading>
+    </div>
+    </div>
+    <script>
+      // 使用render函数来创建HTML
+      Vue.component('anchored-heading', {
+        render: function (createElement) {
+          return createElement(
+            'h' + this.level, //标签名称
+            this.$slots.default // 子元素数组
+          )
+        },
+        props: {
+          level: {
+            type: Number,
+            required: true
+          }
+        }
+      })
+      var app = new Vue({
+        el: '#app'
+      })
+    </script>
+  </body>
+</html>
+

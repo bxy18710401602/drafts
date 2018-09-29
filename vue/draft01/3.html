@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Title</title>
+      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  </head>
+  <body>
+    <div id="app">
+      <base-checkbox v-model="test"></base-checkbox>
+      <blog-post post-title="hello!" /><!-- 这个组件有效之后，后面的组件都无效了 -->
+      {{message}}
+      <button-counter />
+    </div>
+    <script>
+      // 定义一个名为button-counter的新组件，使用Vue.component是全局注册的
+      // 如果定义组件名的时候是以驼峰式命名的，那么在引用的时候可以用ButtonCounter和button-counter都可以，但是直接在DOM中使用的时候只有button-counter是有效的
+      Vue.component('button-counter', {
+        data () {
+          return {
+            count: 0,
+            test: false
+          }
+        },
+        template: '<button v-on:click="count++">点击了{{count}}次</button>'
+      })
+      // 局部注册
+      var ComponentA = {
+        name: 'componentA',
+        data () {
+          return {
+            message: '局部注册的组件哟'
+          }
+        },
+        template: '<h1>{{message}}</h1>'
+      }
+      // Prop
+      Vue.component('blog-post', {
+        // props: ['postTitle', 'test'],
+        // 为每个prop指定类型：
+        props: {
+          title: String,
+          likes: Number,
+          auhtor: Object,
+          propC: {
+            // type可以是String,Number,Boolean,Array,Object,Date,Function, Symbol,也可以是自定义的构造函数
+            type: Number, // 数据类型
+            required: true, // 是否必填
+            default: 100, // 默认值
+            validator: function (value) { // 自定义的验证函数
+              return ['success', 'warning', 'danger'].indexOf(value) !== -1
+            }
+          }
+        },
+        template: '<h3>{{postTitle}}</h3>'
+      })
+      // 自定义事件（因为html不区分大小写，所以推荐使用kebab-case的事件名）
+      Vue.component('base-checkbox', {
+        model: {
+          prop: 'checked',
+          event: 'change'
+        },
+        props: {
+          checked: Boolean
+        },
+        template: `
+          <input type="checkbox"
+          v-bind:checked="checked"
+          v-on:change="$emit('change', $event.target.checked)"
+        `
+      })
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: '测试测试'
+        }
+      })
+    </script>
+  </body>
+</html>
+

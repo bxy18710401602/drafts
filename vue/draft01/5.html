@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Title</title>
+      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  </head>
+  <body>
+    <div id="app">
+    </div>
+    <script>
+      var mixin = {
+        data: function () {
+          return {
+            message: 'hello',
+            foo: 'abc'
+          }
+        }
+      }
+      // 定义一个混入对象
+      var myMixin = {
+        created: function () {
+          this.hello()
+        },
+        methods: {
+          hello: function () {
+            console.log('hello')
+          }
+        }
+      }
+      // 定义一个使用混入对象的组件
+      var Component = Vue.extend({
+        mixins: [myMixin]
+      })
+      var component = new Component()
+      
+      var app = new Vue({
+        mixins: [mixin],
+        el: '#app',
+        data: {
+          message: '测试测试'
+        },
+        created: function () {
+          console.log(this.$data, 'aaa')
+        }
+      })
+    </script>
+  </body>
+</html>
+
