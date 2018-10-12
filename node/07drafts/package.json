@@ -1,0 +1,15 @@
+{
+  "name": "07drafts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "file.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "iconv": "^2.3.0",
+    "iconv-lite": "^0.4.24"
+  }
+}
