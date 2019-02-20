@@ -1,0 +1,14 @@
+{
+  "name": "@lana-rm/tiny",
+  "version": "4.0.0",
+  "description": "remove all spaces from a string",
+  "license": "MIT",
+  "repository": "lana-rm/tiny",
+  "main": "index.js",
+  "keywords": [
+    "npm"
+  ],
+  "devDependencies": {
+    "@lana-rm/tiny": "^4.0.0"
+  }
+}
