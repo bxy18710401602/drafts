@@ -1,2 +1,2 @@
 # drafts
-This is some messy code, some of which refer to the code on the web.
+This is some scattered code for practice front ends.
