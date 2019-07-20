@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="test_container">
+
+  </div>
+  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  <!-- 不要在生产环境使用下面这个地址 -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script type="text/babel">
+    'use strict';
+    const e = React.createElement;
+    class LikeButton  extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { liked: false };
+      }
+
+      render() {
+        if (this.state.liked) {
+          return 'You liked this.'
+        }
+         
+        // return e(
+        //   'button',
+        //   { onClick: () => this.setState({ liked: true } ) },
+        //   'Like'
+        // )
+        return (
+          <button onClick={() => this.setState({ liked: true })}>
+            Like
+          </button>
+        )
+      }
+    }
+    const domContainer = document.querySelector('#test_container');
+    ReactDOM.render(e(LikeButton), domContainer);
+  </script>
+</body>
+</html>

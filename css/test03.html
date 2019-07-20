@@ -1,0 +1,69 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      .nav-list {
+        background-color: purple;
+      }
+      .nav-item {
+        position: relative;
+        display: inline-block;
+        /* background-color: green; */
+        width: 100px;
+        height: 20px;
+        color: #fff;
+      }
+      .item-content {
+        position: absolute;
+        z-index: 2;
+      }
+      .nav-item, .nav-item:after {
+        border: 2px solid #fff;
+        border-radius: 3px;
+      }
+      .nav-item:hover:after {
+        visibility: visible;
+      }
+      .nav-item:after {
+        position: absolute;
+        visibility: hidden;
+        z-index: 1;
+        content: ' ';
+        width: 100px;
+        height: 30px;
+        top: 0;
+        left: 0;
+        /* height: 20px;
+        width: 20px; */
+        border: 2px solid #fff;
+        /* background-color: red; */
+        background-image: url('./123.jpg');
+        background-size: cover;
+        /* background: linear-gradient(90deg, transparent, blue); */
+        /* transform: rotate(45deg); */
+      }
+      .container {
+        background-color: yellow;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-list">
+      <div class="nav-item">
+        <div class="item-content">1</div>
+      </div>
+      <div class="nav-item">
+        <div class="item-content">2</div>
+      </div>
+      <div class="nav-item">
+        <div class="item-content">3</div>
+      </div>
+    </div>
+    <div class="container">
+  
+    </div>
+  
+  </body></html>
