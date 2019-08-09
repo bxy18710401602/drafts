@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas</title>
+  <link rel="stylesheet" type="text/css" href="./canvas.css" />
+</head>
+<body>
+  <canvas id="canvas" class="canvas"></canvas>
+  <div id="operations">
+    <input class="operate-button" type="button" id="pencil" value="铅笔"/>
+    <input class="operate-button" type="button" id="straightLine" value="直线"/>
+    <input class="operate-button" type="button" id="rectangle" value="矩形"/>
+    <input class="operate-button" type="button" id="circle" value="圆形"/>
+    <input class="operate-button" type="button" id="eraser" value="橡皮擦"/>
+    <input class="operate-button" type="button" id="image" value="导入图片"/>
+    <input class="operate-button" type="button" id="save" value="保存"/>
+    <label>颜色：<input class="operate-button" type="color" id="color" /></label>
+    <label>线条粗细：1<input class="operate-button" type="range" id="lineWidth" />100
+    <input class="operate-button" type="file" id="imageFile" name="image"/>
+    <a class="operate-button" id="downloadLink" />
+    </label>
+  </div>
+  <script src="./canvas.js"></script>
+</body>
+</html>
