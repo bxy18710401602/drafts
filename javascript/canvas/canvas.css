@@ -1,8 +1,0 @@
-.canvas {
-  height: 800px;
-  width: 800px;
-  background-color: #ccc;
-}
-#imageFile, #downloadLink {
-  display: none;
-}
