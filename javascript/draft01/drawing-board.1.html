@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>练习画板</title>
+  <style>
+    #canvas {
+      width: 800px;
+      height: 800px;
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div id="select">
+      <button id="pencil">铅笔</button>
+      <button id="line">直线</button>
+      <button id="rect">矩形</button>
+      <button id="arc">圆形</button>
+      <button id="eraser">橡皮擦</button>
+      <button id="img">图片</button>
+      <button id="save">保存</button>
+      <input type="file" id="file" name="img" style="display: none;" />
+      <input type="color" id="color" />
+      <input type="number" id="lineWidth" />
+    </div>
+    <canvas id="canvas" width="800" height="800"></canvas>
+  </div>
+  <script>
+     window.onload = function () {
+      var draw = new Draw();
+      draw.init();   
+     };
+    var Draw = function () {
+      this.type = 'pencil'; // 选择类型，默认为铅笔
+      this.canvas = document.getElementById('canvas');
+      this.context = this.canvas.getContext('2d');
+      this.isDrawing = false; 
+      this.color = document.getElementById('color');
+      this.lineWidth = document.getElementById('lineWidth');
+      this.select = document.getElementById('select');
+      this.img = new Image(); //用于绘制直线，矩形，圆形
+    }
+    Draw.prototype.init = function () {
+      var that = this;
+      var originX = null;
+      var originY = null;
+
+      this.select.addEventListener('click', function (event){
+        switch (event.target.id) {
+          case 'pencil': 
+            that.type = 'pencil';
+            break;
+          case 'line': 
+            that.type = 'line';
+            break;
+          case 'rect': 
+            that.type = 'rect';
+            break;
+          case 'arc': 
+            that.type = 'arc';
+            break;    
+          case 'eraser': 
+            that.type = 'eraser';
+            break;  
+          case 'img': 
+            img(that);
+            break;  
+          case 'save': 
+            save(that);
+            break;
+        }
+      }, false);
+
+      this.canvas.addEventListener('mousedown', function (event) {
+        that.isDrawing = true;
+        originX = event.clientX - that.canvas.offsetLeft; // 在画布上的x坐标
+        originY = event.clientY - that.canvas.offsetTop; // 在画布上的y坐标
+        that.context.moveTo(originX, originY);
+        that.context.strokeStyle = that.color.value; // 设置边框的颜色
+        that.context.lineWidth = that.lineWidth.value; // 设置线条的宽度
+        that.context.beginPath();
+      }, false);
+
+      this.canvas.addEventListener('mouseleave', function () {
+        if (that.isDrawing) {
+          that.context.closePath();
+          that.isDrawing = false;
+        }
+      }, false);
+
+      this.canvas.addEventListener('mouseup', function (event) {
+        if (that.isDrawing) {
+          that.context.closePath();
+          that.isDrawing = false;
+        }
+      }, false);
+
+      this.canvas.addEventListener('mousemove', function (event) {
+        if (that.isDrawing) {
+          var x = event.clientX - that.canvas.offsetLeft; // 移动工程中的x坐标
+          var y = event.clientY - that.canvas.offsetTop; // 移动过程中的y坐标
+
+          if (that.type == 'pencil') {
+            that.context.lineTo(x, y);
+            that.context.stroke();
+          }
+          if (that.type == 'eraser') {
+            that.context.strokeStyle = '#ccc';
+            that.context.clearRect(x-10, y-10, 20, 20);
+          }
+          var newOriginX = originX, newOriginY = originY;
+          if (that.type == 'line') {
+            that.context.clearRect(0, 0, 800, 800);
+            that.context.drawImage(that.img, 0, 0);
+            that.context.beginPath();
+
+            that.context.moveTo(originX, originY);
+            that.context.lineTo(x, y);
+            that.context.stroke();
+          } else if (that.type == 'rect') {
+            that.context.clearRect(0, 0, 800, 800);
+            that.context.drawImage(that.img, 0, 0);
+            that.context.beginPath();
+
+            if (x < originX) {
+              newOriginX = x;
+            }
+            if (y < originY) {
+              newOriginY = y;
+            }
+            that.context.rect(newOriginX, newOriginY, Math.abs(x-originX), Math.abs(y-originY));
+            that.context.stroke();
+
+            that.context.closePath();
+          } else if (that.type == 'arc') {
+            that.context.clearRect(0, 0, 800, 800);
+            that.context.drawImage(that.img, 0, 0);
+            that.context.beginPath();
+
+            if (x < originX) {
+              newOriginX = x;
+            }
+            if (y < originY) {
+              newOriginY = y;
+            }
+            var r = Math.sqrt(Math.abs(x-originX) * Math.abs(x-originX) + Math.abs(y-originY) * Math.abs(y-originY));
+            that.context.arc(Math.abs(x-originX) + newOriginX, Math.abs(y-originY) + newOriginY, r, 0, 2*Math.PI);
+            that.context.fillStyle = that.color.value;
+            that.context.fill();
+            that.context.closePath();
+          }
+        }
+      }, false);
+
+      this.canvas.addEventListener('mousedown', function (event) {
+        that.isDrawing = true;
+        that.img.src = that.canvas.toDataURL('image/png');
+
+        originX = event.clientX - that.canvas.offsetLeft; // x坐标
+        originY = event.clientY - that.canvas.offsetTop; // y坐标
+
+        that.context.moveTo(originX, originY);
+        that.context.strokeStyle = that.color.value;
+        that.context.lineWidth = that.lineWidth.value;
+        that.context.beginPath();
+      }, false);
+
+    }
+    
+    function img (that) {
+      document.getElementById('file').click(); // 默认触发选择文件操作
+      document.getElementById('file').onchange = function (event) {
+        var reader = new FileReader(); // FileReader用来读取文件
+        reader.readAsDataURL(event.target.files[0]); // readAsDataURL会读取指定的Bolb或File对象。读取操作完成的时候，readState会变成已完成，并触发loadend事件，同时result属性将包含一个data：URL格式的字符串（base64编码）以表示所读取文件的内容。
+        reader.onload = function (event) {
+          var img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            that.context.drawImage(img, 0, 0); // 把图片直接画在画布上, drawImage(image, dx, dy)用于在Canvas上绘制图像
+          } 
+        }
+      }
+    }
+    function save (that) {
+      var a = document.createElement('a');
+      a.href = that.canvas.toDataURL('image/png'); //toDataURL返回一个包含图片展示的data URL
+      a.download = 'image.jpeg'; // download属性用于指定下载文件的文件min
+      a.id = 'download';
+      a.innerHTML = 'download';
+      document.body.appendChild(a);
+      document.getElementById('download').style.display = 'none';
+      document.getElementById('download').click();
+    }
+  </script>
+</body>
+</html>
